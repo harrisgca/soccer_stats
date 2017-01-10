@@ -75,6 +75,8 @@
         if (teamKeycodes[e.which]) {
             buttonPressedContainer.html(`${teamKeycodes[e.which].button}`);
             actionRecordedContainer.html(`${teamKeycodes[e.which].action}`);
+            // track stats here
+            saveStats(e.which);
             return false;
         } else {
             buttonPressedContainer.html('');
@@ -84,6 +86,24 @@
 
     };
 
+    const saveStats = function _saveStats(keycode){
+      const gameId = getInput();
+      const gameData = JSON.parse(loadFromLocalStorage(gameId));
+      // const gameData = loadFromLocalStorage(gameId);
+      const currentGame = new Game(gameData);
+      console.log(currentGame);
+
+      // switch (keycode) {
+      //   case 102:{
+      //     currentGame.
+      //     break;
+      //   }
+      //   default:{
+      //     return;
+      //   }
+      // }
+    };
+
     const saveToLocalStorage = function _saveToLocalStorate(key,data){
       const value = JSON.stringify(data);
       localStorage.setItem(key,value);
@@ -91,8 +111,7 @@
     };
 
     const loadFromLocalStorage = function _loadFromLocalStorate(key){
-      localStorage.getItem(key);
-      return;
+      return localStorage.getItem(key);;
     };
 
     const clearInput = function _clearInput() {
@@ -101,7 +120,9 @@
     };
 
     const getInput = function _clearInput() {
-      return inputBox.val();
+      // console.log(inputBox.val());
+      const val = inputBox.val()
+      return val;
     };
 
     const startNewGame = function _startTracking(){
@@ -113,8 +134,8 @@
         - Start tracking stats;
       **/
       const initialGameState = {
-          gameId: '',
-          complete: false,
+          // gameId: '',
+          // complete: false,
           stats: {
               us: {
                   completedPasses: 0,
@@ -136,23 +157,23 @@
       const gameId = getInput();
       if (gameId) {
         const newGame = new Game(initialGameState);
-        console.log(newGame);
-        saveToLocalStorage(gameId, JSON.stringify(newGame.data));
-        lockKeypad();
+        saveToLocalStorage(gameId, newGame.data);
+        $(window).on('keypress', displayLastButtonPressed);
         return;
       }
       console.log('need a game id');
     };
 
-    const lockKeypad = function _lockButtons() {
-      $(window).on('keypress', displayLastButtonPressed);
-    };
-    
-    const unlockKeypad = function _lockButtons() {
+    // const startTracking = function startTracking(gameId) {
+    //
+    //
+    // };
+
+    const unlockKeypad = function _unlockKeypad() {
       $(window).off('keypress', displayLastButtonPressed);
     };
 
-    const stopTracking = function _startTracking(){
+    const stopTracking = function _stopTracking(){
       /**
         - Set tracking to false
       **/

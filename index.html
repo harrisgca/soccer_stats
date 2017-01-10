@@ -8,10 +8,17 @@
   <body>
     <main>
       <h1>Tracking stats!</h1>
-      <article class="">
+      <section>
         <h3>Last Button Pressed: <span class="buttonPressed"><!-- insert here --></span></h3>
         <h3>Last Action Recorded: <span class="actionRecorded"><!-- insert here --></span></h3>
-      </article>
+      </section>
+
+      <section class="buttons">
+        <input type="text" id="inputBox" placeholder="Enter text...">
+        <button type="button" name="button" id="startTracking">Track New Game</button>
+        <button type="button" name="button" id="stopTracking">Stop Tracking Game</button>
+      </section>
+
     </main>
     <script src="jquery-3.1.1.js" charset="utf-8"></script>
     <script src="main.js" charset="utf-8"></script>
