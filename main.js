@@ -93,15 +93,17 @@
       const currentGame = new Game(gameData);
       console.log(currentGame);
 
-      // switch (keycode) {
-      //   case 102:{
-      //     currentGame.
-      //     break;
-      //   }
-      //   default:{
-      //     return;
-      //   }
-      // }
+      switch (keycode) {
+        case 102:{
+          console.log(currentGame.data.stats.us.completedPasses);
+          currentGame.data.stats.us.completedPasses += 1;
+          break;
+        }
+        default:{
+          return;
+        }
+      }
+      saveToLocalStorage(gameId, currentGame.data);
     };
 
     const saveToLocalStorage = function _saveToLocalStorate(key,data){
@@ -156,9 +158,13 @@
 
       const gameId = getInput();
       if (gameId) {
-        const newGame = new Game(initialGameState);
-        saveToLocalStorage(gameId, newGame.data);
         $(window).on('keypress', displayLastButtonPressed);
+        if (localStorage.getItem(gameId)) {
+          return;
+        }else{
+          const newGame = new Game(initialGameState);
+          saveToLocalStorage(gameId, newGame.data);
+        }
         return;
       }
       console.log('need a game id');
