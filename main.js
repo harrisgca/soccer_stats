@@ -7,12 +7,17 @@
     const inputBox = $('#inputBox');
     const startButton = $('#startTracking');
     const stopButton = $('#stopTracking');
+    let lastAction = 0;
 
     // Application state
     class Game {
       constructor(data = {}){
         this.trackingGame = false;
         this.data = data;
+      }
+
+      trackLastAction(keycode) {
+        lastAction = keycode
       }
     }
 
@@ -72,6 +77,10 @@
     };
 
     const displayLastButtonPressed = function _displayLastButtonPressed(e) {
+        console.log(e.which);
+        if (e.which === 32) {
+          removeLastAction();
+        }
         if (teamKeycodes[e.which]) {
             buttonPressedContainer.html(`${teamKeycodes[e.which].button}`);
             actionRecordedContainer.html(`${teamKeycodes[e.which].action}`);
@@ -94,9 +103,68 @@
       console.log(currentGame);
 
       switch (keycode) {
+        // our actions
+        case 97: {
+          currentGame.data.stats.us.shots += 1;
+          console.log('us.shots',currentGame.data.stats.us.shots);
+          currentGame.trackLastAction(97);
+          console.log('last action: ',lastAction);
+          break;
+        }
+        case 115: {
+          currentGame.data.stats.us.shotsOnTarget += 1;
+          console.log('us.shotsOnTarget',currentGame.data.stats.us.shotsOnTarget);
+          currentGame.trackLastAction(115);
+          console.log('last action: ',lastAction);
+          break;
+        }
+        case 100: {
+          currentGame.data.stats.us.incompletePasses += 1;
+          console.log('us.incompletePasses',currentGame.data.stats.us.incompletePasses);
+          currentGame.trackLastAction(100);
+          break;
+        }
         case 102:{
-          console.log(currentGame.data.stats.us.completedPasses);
           currentGame.data.stats.us.completedPasses += 1;
+          console.log('us.completedPasses',currentGame.data.stats.us.completedPasses);
+          currentGame.trackLastAction(102);
+          break;
+        }
+        case 103:{
+          currentGame.data.stats.us.goals += 1;
+          console.log('us.goals',currentGame.data.stats.us.goals);
+          currentGame.trackLastAction(103);
+          break;
+        }
+        // theri actions
+        case 104:{
+          currentGame.data.stats.them.goals += 1;
+          console.log('them.goals',currentGame.data.stats.them.goals);
+          currentGame.trackLastAction(104);
+          break;
+        }
+        case 59:{
+          currentGame.data.stats.them.shots += 1;
+          console.log('them.shots)',currentGame.data.stats.them.shots);
+          currentGame.trackLastAction(59);
+          break;
+        }
+        case 108:{
+          currentGame.data.stats.them.shotsOnTarget += 1;
+          console.log('them.shotsOnTarget',currentGame.data.stats.them.shotsOnTarget);
+          currentGame.trackLastAction(108);
+          break;
+        }
+        case 107:{
+          currentGame.data.stats.them.incompletePasses += 1;
+          console.log('them.incompletePasses',currentGame.data.stats.them.incompletePasses);
+          currentGame.trackLastAction(107);
+          break;
+        }
+        case 106:{
+          currentGame.data.stats.them.completedPasses += 1;
+          console.log('them.completedPasses',currentGame.data.stats.them.completedPasses);
+          currentGame.trackLastAction(106);
           break;
         }
         default:{
@@ -180,13 +248,78 @@
     };
 
     const stopTracking = function _stopTracking(){
-      /**
-        - Set tracking to false
-      **/
       console.log('stop tracking');
       unlockKeypad();
       return;
     };
+
+    const removeLastAction = function _removeLastAction(keycode){
+      /**
+        save stats function is too tightly coupled
+        to incrementing. need to abstract
+      **/
+      if (alert('remove last action?')) {
+        switch (keycode) {
+          // our actions
+          case 97: {
+            currentGame.data.stats.us.shots -= 1;
+            console.log('us.shots',currentGame.data.stats.us.shots);
+            saveStats(keycode)
+            break;
+          }
+          case 115: {
+            currentGame.data.stats.us.shotsOnTarget -= 1;
+            console.log('us.shotsOnTarget',currentGame.data.stats.us.shotsOnTarget);
+            break;
+          }
+          case 100: {
+            currentGame.data.stats.us.incompletePasses -= 1;
+            console.log('us.incompletePasses',currentGame.data.stats.us.incompletePasses);
+            break;
+          }
+          case 102:{
+            currentGame.data.stats.us.completedPasses -= 1;
+            console.log('us.completedPasses',currentGame.data.stats.us.completedPasses);
+            break;
+          }
+          case 103:{
+            currentGame.data.stats.us.goals -= 1;
+            console.log('us.goals',currentGame.data.stats.us.goals);
+            break;
+          }
+          // theri actions
+          case 104:{
+            currentGame.data.stats.them.goals -= 1;
+            console.log('them.goals',currentGame.data.stats.them.goals);
+            break;
+          }
+          case 59:{
+            currentGame.data.stats.them.shots -= 1;
+            console.log('them.shots)',currentGame.data.stats.them.shots);
+            break;
+          }
+          case 108:{
+            currentGame.data.stats.them.shotsOnTarget -= 1;
+            console.log('them.shotsOnTarget',currentGame.data.stats.them.shotsOnTarget);
+            break;
+          }
+          case 107:{
+            currentGame.data.stats.them.incompletePasses -= 1;
+            console.log('them.incompletePasses',currentGame.data.stats.them.incompletePasses);
+            break;
+          }
+          case 106:{
+            currentGame.data.stats.them.completedPasses -= 1;
+            console.log('them.completedPasses',currentGame.data.stats.them.completedPasses);
+            break;
+          }
+          default:{
+            return;
+          }
+        }
+      }
+
+    }
 
     // $(window).on('keypress', displayLastButtonPressed);
     startButton.on('click', startNewGame);
